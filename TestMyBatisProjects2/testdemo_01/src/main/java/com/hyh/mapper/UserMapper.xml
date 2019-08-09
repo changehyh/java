@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hyh.mapper.UserMapper">
+
+    <sql id="hyhSql">
+        <if test="userEx != null">
+            <if test="userEx.sex != null">
+                and user.sex = #{userEx.sex}
+            </if>
+            <if test="userEx.username != null">
+                and user.username like '%${userEx.username}%'
+            </if>
+        </if>
+    </sql>
+    <sql id="hyhSql2">
+        <foreach collection="moreIds" item="everyId" open="and (" close=")" separator="or">
+            id=#{everyId}
+        </foreach>
+    </sql>
+
+
+    <sql id="hyhSql3">
+        <foreach collection="moreIds" item="everyId" open="id in(" close=")" separator=",">
+            #{everyId}
+        </foreach>
+    </sql>
+
+    <select id="queryUserZH" parameterType="com.hyh.pack.UserPack" resultType="com.hyh.po.UserEx">
+        select
+        *
+        from
+        user
+        <where>
+            <include refid="hyhSql"/>
+        </where>
+    </select>
+
+    <select id="queryUserCount" parameterType="com.hyh.pack.UserPack" resultType="int">
+        select
+        count(*)
+        from
+        user
+        <where>
+            <include refid="hyhSql"/>
+        </where>
+    </select>
+
+    <select id="queryUserByMoreIds" parameterType="com.hyh.pack.UserPack" resultType="com.hyh.po.UserEx">
+        select
+        *
+        from
+        user
+        <where>
+            <include refid="hyhSql3"/>
+        </where>
+
+    </select>
+
+
+</mapper>
